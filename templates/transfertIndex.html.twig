@@ -2,18 +2,21 @@
 <html>
     <head>
         <meta charset="UTF-8">
+        <meta name="author" content="PROVOT Laila, GALLUSSER Thomas">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <link rel="stylesheet" href="css/style.css">
+        <title>WeFileTransfert</title>
     </head>
     <body>
-        {% block body %}{% endblock %}
-            {{ form_start(btn) }}
-            <div class="container">
-              {{ form_row(btn.send) }}
-            </div>
-
-          {{ form_end(btn) }}
-        {% block javascripts %}{% endblock %}
+      <div class="mail"></div>
+      {{ form_start(btn) }}
+        <div class="container text-center my-5">
+          <div class="col-5 m-auto cadre">
+            <h1 class="mb-5">Bienvenue sur WeFileTransfert !</h1>
+            <p class="my-5">Le service WeFileTransfert à pour but de transférer des fichiers de façons sécurisé et sans inscription, il suffit simplement de remplir les champs de mettre le fichier à envoyer, le destinataire recevra un email avec le lien, vous pouvez également partager vous même en utilisant le lien généré qui sera supprimé après 48h sur nos serveurs.</p>
+            {{ form_widget(btn.send) }}
+          </div>
+        </div>
+      {{ form_end(btn) }}
     </body>
 </html>

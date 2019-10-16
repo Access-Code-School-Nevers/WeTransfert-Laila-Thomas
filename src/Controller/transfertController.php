@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller;
 
-use App\Form\formTransfert;
 use App\Entity\EntityTransfert;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,70 +14,77 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints as Assert;
-use sendMail;
 use ZipArchive;
 
-
 class transfertController extends AbstractController {
-  /**
-   * @Route("/")
-   */
+
+  // ############ INDEX ############
+  /** @Route("/") */
   public function index(Request $request) {
-      $form = $this->createForm(FormType::class)->add('send', SubmitType::class, ['label' => 'Commencer à transférer']);
+      // Création d'un bouton de redirection vers la page de transfert
+      $form = $this->createForm(FormType::class)
+      ->add('send', SubmitType::class, [
+        'label' => 'Commencer à transférer',
+        'attr' => ['class' => 'my-3 btn btn-primary']
+      ]);
       $form->handleRequest($request);
 
-      if ($form->isSubmitted()) {
-           return $this->redirectToRoute('transfert');
-       }
+      if ($form->isSubmitted()) return $this->redirectToRoute('transfert');// Redirection vers la page de transfert de fichiers
 
-      return $this->render('transfertIndex.html.twig', [
-        'btn' => $form->createView(),
-      ]);
+      return $this->render('transfertIndex.html.twig', [ 'btn' => $form->createView() ]);// Affichage de la page d'index
   }
 
-  /**
-   * @Route("/transfert", name="transfert")
-   */
+
+  // ############ transfert ############
+  /** @Route("/transfert", name="transfert") */
   public function new(Request $request, \Swift_Mailer $mailer) {
-      $envoie = new EntityTransfert();
+
+      // Préparation de la création du formulaire de transfert
+      $envoie = new EntityTransfert(); // Relier à l'entité EntityTransfert
       $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $envoie);
 
+      // Création du formulaire et de tout ces composants
       $formBuilder
               ->add('name', TextType::class, [
                   'label'           => '',
-                  'attr'            => ['placeholder' => 'Votre nom'],
                   'required'        => true,
+                  'attr'            => ['class' => 'my-2 form-control', 'placeholder' => 'Nom de l\'expéditeur']
               ])
               ->add('sender', TextType::class, [
                   'label'           => '',
-                  'attr'            => ['placeholder' => 'Votre mail'],
                   'required'        => true,
+                  'attr'            => ['class' => 'my-2 form-control', 'placeholder' => 'Email de l\'expéditeur'],
                   'invalid_message' => 'Ce mail n\'est pas valide.',
-                  'constraints'     => new Assert\Email(),
+                  'constraints'     => new Assert\Email()
                 ])
                 ->add('receiver', TextType::class, [
                     'label'           => '',
-                    'attr'            => ['placeholder' => 'Email de votre amis'],
                     'required'        => true,
+                    'attr'            => ['class' => 'my-2 form-control', 'placeholder' => 'Email du destinataire'],
                     'invalid_message' => 'Ce mail n\'est pas valide.',
-                    'constraints'     => new Assert\Email(),
+                    'constraints'     => new Assert\Email()
                 ])
                 ->add('fileName', FileType::class, [
                     'label'           => 'Fichier à envoyer: ',
-                    'required'        => true,
+                    'attr'            => ['class' => 'my-3 form-control-file'],
+                    'required'        => true
                 ])
                 ->add('send', SubmitType::class, [
-                    'label'           => 'Envoyer le(s) fichier(s)',
+                  'label' => 'Envoyer le fichier',
+                  'attr'  => ['class' => 'my-3 btn btn-primary']
                 ]);
 
       $form = $formBuilder->getForm();
-      $form->handleRequest($request);
+      $form->handleRequest($request); // Redirection de l'envoie du formulaire sur la page du formulaire
 
+      // Si la page actuel reçois le formulaire ...
       if ($form->isSubmitted() && $form->isValid()) {
+        // On récupère les informations du formulaire
         $elements = $form->getData();
         $entityManager = $this->getDoctrine()->getManager();
-        $originalName = $request->files->get('form')['fileName']->getClientOriginalName();
+        $originalName = $request->files->get('form')['fileName']->getClientOriginalName(); // Le nom original du fichier envoyer
 
+        // Création du fichier ZIP qui contiendra le fichier
         $zipName = $elements->getName().'-'.uniqid() . '.zip';
         $zipfile = new ZipArchive();
         $zipfile->open($this->getParameter('file_directory') . $zipName, ZipArchive::CREATE);
@@ -86,42 +92,28 @@ class transfertController extends AbstractController {
         $zipfile->close();
         $elements->setFileName($zipName);
 
+        // Ajout dans la base de donnée via l'entité
         $entityManager->persist($elements);
         $entityManager->flush();
 
+        // Création du mail envoyer
         $message = (new \Swift_Message())
-          ->setSubject('EasyTransfer - Fichiers envoyés par ' . $elements->getName())
-          ->setFrom([$elements->getSender()])
-          ->setTo([$elements->getReceiver()]);
+          ->setSubject($elements->getName() . ' vous à envoyé un fichier par WeFileTransfert.')
+          ->setFrom(['wefiletransfert@gmail.com'])
+          ->setTo([$elements->getReceiver()])
+          ->setReplyTo([$elements->getSender()]);
 
-          // $cid = $message->embed(\Swift_Image::fromPath('img/logo.png'));
-          $message->setBody(
-            $this->renderView('email.txt.twig', [
-                // 'nomDestinataire' => $elements->getName(),
-                // 'nomAuteur' => $elements->getSender(),
-                'link' => 'uploads/' . $zipName /*,
-                'imgLogo' => $cid */
-            ]),
-            'text/html'
-          );
+        $message->setBody($this->renderView('email.html.twig', [
+          'link' => 'uploads/' . $zipName,
+          'name' => $elements->getName()
+        ]),'text/html');
+        $mailer->send($message); // Envoie de l'email
 
-          $mailer->send($message);
-
-        // $this->sendM('test');
-
-        return $this->render('transfertSuccess.html.twig');
-
+        return $this->render('transfertSuccess.html.twig', [
+          'link' => 'uploads/' . $zipName
+        ]); // Affichage du succès de l'envoie du formulaire
        }
 
-      return $this->render('transfertPage.html.twig', [
-        'form' => $form->createView(),
-      ]);
-  }
-
-  /**
-   * @Route("/transfert_success", name="transfert_success")
-   */
-  public function success($infos) {
-      return $this->render('transfertSuccess.html.twig');
+      return $this->render('transfertPage.html.twig', ['form' => $form->createView()]); // Affichage du formulaire d'envoie de fichier
   }
 }

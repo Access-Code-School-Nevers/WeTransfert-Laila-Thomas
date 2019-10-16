@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <title>WeFileTransfert</title>
+    </head>
+    <body>
+          <h1 class="my-3 text-success">{{ name }} vous à envoyé un fichier en utilisant le service WeFileTransfert</h1>
+          <p>Vous pouvez dès à présent télécharger le fichier, vous pouvez également répondre à ce mail pour répondre à la personne.</p>
+          <a href="{{ absolute_url(link) }}">Télécharger le fichier</a>
+          <p>N'ouvrez jamais un fichier dont vous ne connaissez pas l'expéditeur !</p>
+    </body>
+</html>

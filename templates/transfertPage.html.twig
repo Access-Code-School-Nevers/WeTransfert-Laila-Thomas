@@ -2,12 +2,26 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <meta name="author" content="PROVOT Laila, GALLUSSER Thomas">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="css/style.css">
+        <title>WeFileTransfert</title>
     </head>
     <body>
-        {% block body %}{% endblock %}
-        {{ form(form) }}
-        {% block javascripts %}{% endblock %}
+      <div class="mail"></div>
+      {{ form_start(form) }}
+        <div class="container text-center my-5">
+          <div class="col-5 m-auto cadre">
+            <h1 class="my-3">Envoyer un fichier:</h1>
+              <div class="form-group">
+              {{ form_widget(form.name) }}
+              {{ form_widget(form.sender) }}
+              {{ form_widget(form.receiver) }}
+              {{ form_widget(form.fileName) }}
+              {{ form_widget(form.send) }}
+            </div>
+          </div>
+        </div>
+      {{ form_end(form) }}
     </body>
 </html>

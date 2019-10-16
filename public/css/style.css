@@ -1,0 +1,87 @@
+body {
+  background: url("../img/backg.gif") no-repeat;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.cadre {
+  background-color: rgba(255, 255, 255, 0.7);
+  border: solid 1px rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+  z-index: 2;
+}
+
+.mail{
+  position: absolute;
+  background-image: url('../img/mail.png');
+  background-size: 100% 100%;
+  width: 60px;
+  height: 40px;
+  top: -50px;
+  left: -70px;
+  z-index: 1;
+  animation: 3s roll infinite;
+  transform: rotate(0deg);
+}
+
+@keyframes roll {
+  0% {
+    top: -50px;
+    left: -70px;
+    transform: rotate(-360deg)
+  }
+
+  25% {
+    top: 50%;
+    left: 50%;
+    transform: rotate(0deg)
+  }
+
+  27% {
+    top: 40%;
+    left: 55%;
+    transform: rotate(-45deg)
+  }
+  29% {
+    top: 30%;
+    left: 60%;
+    transform: rotate(-90deg)
+  }
+  31% {
+    top: 20%;
+    left: 55%;
+    transform: rotate(-135deg)
+  }
+  33% {
+    top: 10%;
+    left: 50%;
+    transform: rotate(-180deg)
+  }
+
+  35% {
+    top: 20%;
+    left: 45%;
+    transform: rotate(-225deg)
+  }
+  37% {
+    top: 30%;
+    left: 40%;
+    transform: rotate(-270deg)
+  }
+  39% {
+    top: 40%;
+    left: 45%;
+    transform: rotate(-270deg)
+  }
+  45% {
+    top: 50%;
+    left: 50%;
+    transform: rotate(-360deg)
+  }
+  100% {
+    top: 0%;
+    left: 100%;
+    transform: rotate(0deg)
+  }
+
+}

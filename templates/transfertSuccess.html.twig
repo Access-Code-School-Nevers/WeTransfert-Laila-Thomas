@@ -2,12 +2,19 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <meta name="author" content="PROVOT Laila, GALLUSSER Thomas">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="css/style.css">
+        <title>WeFileTransfert</title>
     </head>
     <body>
-        {% block body %}{% endblock %}
-        <h1>Envoyé avec succès !</h1>
-        {% block javascripts %}{% endblock %}
+      <div class="mail"></div>
+      <div class="container text-center my-5">
+        <div class="col-6 m-auto cadre">
+          <h1 class="my-3 text-success">Envoyé avec succès !</h1>
+          <p>Vous pouvez partager le fichier via le lien suivant:</p>
+          <p class="font-weight-bold">{{ absolute_url(link) }}</p>
+        </div>
+      </div>
     </body>
 </html>
