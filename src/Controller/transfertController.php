@@ -36,7 +36,7 @@ class transfertController extends AbstractController {
 
 
   // ############ transfert ############
-  /** @Route("/transfert", name="transfert") */
+  /** @Route("/transfert") */
   public function new(Request $request, \Swift_Mailer $mailer) {
 
       // Préparation de la création du formulaire de transfert
@@ -109,9 +109,7 @@ class transfertController extends AbstractController {
         ]),'text/html');
         $mailer->send($message); // Envoie de l'email
 
-        return $this->render('transfertSuccess.html.twig', [
-          'link' => 'uploads/' . $zipName
-        ]); // Affichage du succès de l'envoie du formulaire
+        return $this->render('transfertSuccess.html.twig', ['link' => 'uploads/' . $zipName]); // Affichage du succès de l'envoie du formulaire
        }
 
       return $this->render('transfertPage.html.twig', ['form' => $form->createView()]); // Affichage du formulaire d'envoie de fichier
